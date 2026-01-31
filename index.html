@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Юридический язык: просто и точно</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="style.css">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-balance-scale"></i>
+                <div class="logo-text">
+                    <h1>Юридический язык</h1>
+                    <span>просто и точно</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#dictionary" class="active"><i class="fas fa-book"></i> Словарь</a></li>
+                <li><a href="#constructor"><i class="fas fa-file-contract"></i> Конструктор</a></li>
+                <li><a href="#test"><i class="fas fa-question-circle"></i> Тест</a></li>
+            </ul>
+            <button class="menu-toggle" aria-label="Меню">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main class="container">
+        <!-- Раздел: Словарь терминов -->
+        <section id="dictionary" class="section">
+            <div class="section-header">
+                <div class="icon-wrapper">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h2>Словарь терминов</h2>
+                <p class="section-description">Пояснение юридических терминов в сравнении с бытовым употреблением</p>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" id="termSearch" placeholder="Введите термин для поиска..." aria-label="Поиск терминов">
+                <button id="searchBtn" aria-label="Найти"><i class="fas fa-search"></i> Найти</button>
+            </div>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Все термины</button>
+                <button class="filter-btn" data-filter="contract">Договоры</button>
+                <button class="filter-btn" data-filter="court">Суд</button>
+                <button class="filter-btn" data-filter="property">Собственность</button>
+                <button class="filter-btn" data-filter="finance">Финансы</button>
+                <button class="filter-btn" data-filter="criminal">Уголовное</button>
+                <button class="filter-btn" data-filter="civil">Гражданское</button>
+                <button class="filter-btn" data-filter="international">Международное</button>
+            </div>
+            
+            <div id="termsContainer" class="terms-container">
+                <!-- Термины загружаются динамически -->
+            </div>
+            
+            <div class="load-more-container" id="loadMoreContainer">
+                <button id="loadMoreBtn" class="btn-tertiary">
+                    <i class="fas fa-plus"></i> Показать ещё термины
+                </button>
+                <div class="terms-count" id="termsCount"></div>
+            </div>
+            
+            <div class="example-box">
+                <h3><i class="fas fa-lightbulb"></i> Пример корректной формулировки</h3>
+                <div class="example-content">
+                    <div class="incorrect">
+                        <h4><i class="fas fa-times-circle"></i> Неверно:</h4>
+                        <p>"Он дал мне в долг деньги"</p>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="correct">
+                        <h4><i class="fas fa-check-circle"></i> Верно:</h4>
+                        <p>"Заёмщик передал заимодавцу сумму в размере 10 000 руб. по договору займа от 01.09.2023"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Раздел: Конструктор документов -->
+        <section id="constructor" class="section">
+            <div class="section-header">
+                <div class="icon-wrapper">
+                    <i class="fas fa-file-contract"></i>
+                </div>
+                <h2>Конструктор документов</h2>
+                <p class="section-description">Создавайте юридические документы с подсказками и проверкой стиля</p>
+            </div>
+            
+            <div class="template-selector">
+                <h3>Выберите шаблон:</h3>
+                <div class="template-buttons">
+                    <button class="template-btn active" data-template="sale">Договор купли-продажи</button>
+                    <button class="template-btn" data-template="claim">Претензия</button>
+                    <button class="template-btn" data-template="petition">Ходатайство</button>
+                </div>
+            </div>
+            
+            <div class="constructor-area">
+                <div class="input-section">
+                    <h3><i class="fas fa-edit"></i> Заполните поля:</h3>
+                    <div id="formFields">
+                        <!-- Поля формы загружаются динамически -->
+                    </div>
+                    <button id="generateDoc" class="btn-primary">
+                        <i class="fas fa-file-download"></i> Сгенерировать документ
+                    </button>
+                </div>
+                
+                <div class="preview-section">
+                    <h3><i class="fas fa-eye"></i> Предпросмотр документа:</h3>
+                    <div id="documentPreview" class="document-preview">
+                        <div class="empty-state">
+                            <i class="fas fa-file-alt"></i>
+                            <p>Заполните поля слева, чтобы сгенерировать документ</p>
+                        </div>
+                    </div>
+                    <!-- Контейнер для кнопок скачивания будет добавляться динамически -->
+                    
+                    <div class="error-highlight">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Подсветка некорректных формулировок:</h4>
+                        <div id="errorList"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Раздел: Тест "Найди ошибку" -->
+        <section id="test" class="section">
+            <div class="section-header">
+                <div class="icon-wrapper">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <h2>Тест "Найди ошибку"</h2>
+                <p class="section-description">Найдите и исправьте ошибки в реальных документах</p>
+            </div>
+            
+            <div class="test-container">
+                <div class="test-header">
+                    <div class="test-progress">
+                        <div class="progress-info">
+                            <span id="progressText">Вопрос 1 из 5</span>
+                            <span class="score-label">Баллы: <span id="scoreText">0</span></span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="test-question">
+                    <h3 id="questionText"></h3>
+                    <div id="documentText" class="document-text">
+                        <!-- Текст документа загружается динамически -->
+                    </div>
+                    
+                    <div class="error-areas">
+                        <h4><i class="fas fa-search"></i> Выберите все ошибки в тексте:</h4>
+                        <div id="errorAreas">
+                            <!-- Варианты ответов загружаются динамически -->
+                        </div>
+                    </div>
+                    
+                    <div class="test-actions">
+                        <button id="checkAnswer" class="btn-primary">
+                            <i class="fas fa-check"></i> Проверить ответ
+                        </button>
+                        <button id="nextQuestion" class="btn-secondary" disabled>
+                            <i class="fas fa-arrow-right"></i> Следующий вопрос
+                        </button>
+                        <button id="showExplanation" class="btn-tertiary" disabled>
+                            <i class="fas fa-info-circle"></i> Объяснение
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="explanation" class="explanation">
+                    <!-- Объяснение загружается динамически -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Футер -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-balance-scale"></i>
+                    <div>
+                        <h3>Юридический язык</h3>
+                        <p>просто и точно</p>
+                    </div>
+                </div>
+                <div class="footer-info">
+                    <p>Проект создан для помощи в составлении юридических документов без языковых ошибок и двусмысленностей</p>
+                    <p>&copy; <span id="currentYear"></span> Юридический язык. Все права защищены.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Подключение JavaScript -->
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
