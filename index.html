@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Юридический язык: просто и точно</title>
-    <!-- Favicon для разных случаев -->
+        <!-- Favicon для разных случаев -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -23,8 +23,8 @@
             <div class="logo">
                 <i class="fas fa-balance-scale"></i>
                 <div class="logo-text">
-                    <h1>Юридический словарь</h1>
-                    <span>более 1000 терминов</span>
+                    <h1>Юридический язык</h1>
+                    <span>просто и точно</span>
                 </div>
             </div>
             <ul class="nav-menu">
@@ -44,20 +44,13 @@
                 <div class="icon-wrapper">
                     <i class="fas fa-book-open"></i>
                 </div>
-                <h2>Юридический словарь</h2>
-                <p class="section-description">Более 1000 юридических терминов с подробными пояснениями</p>
+                <h2>Словарь терминов</h2>
+                <p class="section-description">Пояснение юридических терминов в сравнении с бытовым употреблением</p>
             </div>
             
             <div class="search-box">
                 <input type="text" id="termSearch" placeholder="Введите термин для поиска..." aria-label="Поиск терминов">
                 <button id="searchBtn" aria-label="Найти"><i class="fas fa-search"></i> Найти</button>
-            </div>
-            
-            <!-- Алфавитная навигация -->
-            <div class="alphabet-nav">
-                <div class="alphabet-buttons" id="alphabetButtons">
-                    <!-- Буквы будут добавлены динамически -->
-                </div>
             </div>
             
             <div class="filter-buttons">
@@ -72,12 +65,10 @@
                 <button class="filter-btn" data-filter="legislation">Законодательство</button>
                 <button class="filter-btn" data-filter="rights">Права</button>
                 <button class="filter-btn" data-filter="documents">Документы</button>
-            </div>
-            
-            <!-- Текущая буква и количество -->
-            <div class="current-letter-info">
-                <span class="current-letter" id="currentLetter">А</span>
-                <span class="terms-count" id="termsCount">Загрузка...</span>
+                <button class="filter-btn" data-filter="politics">Политика</button>
+                <button class="filter-btn" data-filter="economics">Экономика</button>
+                <button class="filter-btn" data-filter="commerce">Коммерция</button>
+                <button class="filter-btn" data-filter="negotiation">Переговоры</button>
             </div>
             
             <div id="termsContainer" class="terms-container">
@@ -88,20 +79,20 @@
                 <button id="loadMoreBtn" class="btn-tertiary">
                     <i class="fas fa-plus"></i> Показать ещё термины
                 </button>
-                <div class="total-count" id="totalCount">Всего терминов: 1000+</div>
+                <div class="terms-count" id="termsCount"></div>
             </div>
             
             <div class="example-box">
-                <h3><i class="fas fa-lightbulb"></i> Пример юридического термина</h3>
+                <h3><i class="fas fa-lightbulb"></i> Пример корректной формулировки</h3>
                 <div class="example-content">
                     <div class="incorrect">
-                        <h4><i class="fas fa-book"></i> Термин:</h4>
-                        <p><strong>Абандон</strong> - отказ страхователя от своих прав на застрахованное имущество</p>
+                        <h4><i class="fas fa-times-circle"></i> Неверно:</h4>
+                        <p>"Он дал мне в долг деньги"</p>
                     </div>
                     <div class="arrow">→</div>
                     <div class="correct">
-                        <h4><i class="fas fa-graduation-cap"></i> Пример использования:</h4>
-                        <p>"Абандон судна при его полной гибели позволяет получить полную страховую сумму"</p>
+                        <h4><i class="fas fa-check-circle"></i> Верно:</h4>
+                        <p>"Заёмщик передал заимодавцу сумму в размере 10 000 руб. по договору займа от 01.09.2023"</p>
                     </div>
                 </div>
             </div>
@@ -115,13 +106,13 @@
                 <div class="footer-logo">
                     <i class="fas fa-balance-scale"></i>
                     <div>
-                        <h3>Юридический словарь</h3>
-                        <p>более 1000 терминов</p>
+                        <h3>Юридический язык</h3>
+                        <p>просто и точно</p>
                     </div>
                 </div>
                 <div class="footer-info">
-                    <p>Проект создан для ознакомительных целей. Словарь содержит более 1000 юридических терминов.</p>
-                    <p>&copy; <span id="currentYear"></span> Юридический словарь.</p>
+                    <p>Проект создан для ознакомительных целей и не несет никакой правовой ценности, а так же не является помощником в чем-либо</p>
+                    <p>&copy; <span id="currentYear"></span> Юридический язык. Все права защищены.</p>
                 </div>
             </div>
         </div>
