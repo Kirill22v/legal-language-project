@@ -1606,7 +1606,7 @@ const legalTerms = [
         commonDefinition: "В быту - экспертиза общественности",
         category: "politics",
         example: "Общественная гражданская экспертиза"
-    }
+    },
     // Д (50 терминов)
     {
         id: 201,
