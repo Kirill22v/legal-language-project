@@ -1,3 +1,16 @@
+// Утилитарные функции
+const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+};
+
 // Основной файл скриптов
 document.addEventListener('DOMContentLoaded', function() {
     // Устанавливаем текущий год в футере
@@ -7,13 +20,13 @@ document.addEventListener('DOMContentLoaded', function() {
     initDictionary();
     initNavigation();
     
-    // Анимация загрузки
+    // Добавляем анимацию загрузки
     setTimeout(() => {
         document.body.style.opacity = '1';
     }, 100);
 });
 
-// Модуль словаря терминов с оптимизацией
+// Модуль словаря терминов с ленивой загрузкой
 function initDictionary() {
     const termsContainer = document.getElementById('termsContainer');
     const searchInput = document.getElementById('termSearch');
@@ -21,112 +34,41 @@ function initDictionary() {
     const filterButtons = document.querySelectorAll('.filter-btn');
     const loadMoreBtn = document.getElementById('loadMoreBtn');
     const termsCount = document.getElementById('termsCount');
-    const currentLetterElement = document.getElementById('currentLetter');
-    const totalCount = document.getElementById('totalCount');
-    const alphabetButtons = document.getElementById('alphabetButtons');
     
     let currentFilter = 'all';
     let currentSearch = '';
-    let currentLetter = 'А';
     let currentPage = 0;
-    const termsPerPage = 20; // Увеличил для производительности
+    const termsPerPage = 9; // 3 колонки по 3 термина
     let isAnimating = false;
-    let currentDisplayedTerms = [];
     
-    // Устанавливаем общее количество
-    totalCount.textContent = `Всего терминов: ${allTerms.length}`;
-    
-    // Инициализация алфавитной навигации
-    function initAlphabetNavigation() {
-        const letters = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ';
-        
-        letters.split('').forEach(letter => {
-            const button = document.createElement('button');
-            button.className = 'letter-btn';
-            button.textContent = letter;
-            button.dataset.letter = letter;
-            
-            // Проверяем, есть ли термины на эту букву
-            if (!termsByLetter[letter] || termsByLetter[letter].length === 0) {
-                button.disabled = true;
-            }
-            
-            button.addEventListener('click', () => {
-                if (isAnimating || button.disabled) return;
-                
-                // Убираем активный класс у всех кнопок
-                document.querySelectorAll('.letter-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                
-                // Добавляем активный класс к нажатой кнопке
-                button.classList.add('active');
-                
-                // Устанавливаем текущую букву
-                currentLetter = letter;
-                currentPage = 0;
-                currentSearch = '';
-                searchInput.value = '';
-                
-                // Отображаем термины
-                displayTermsByLetter(letter);
-                
-                // Сбрасываем фильтры
-                filterButtons.forEach(btn => {
-                    if (btn.dataset.filter === 'all') {
-                        btn.classList.add('active');
-                    } else {
-                        btn.classList.remove('active');
-                    }
-                });
-                currentFilter = 'all';
-            });
-            
-            alphabetButtons.appendChild(button);
-        });
-        
-        // Активируем первую букву
-        const firstLetterBtn = alphabetButtons.querySelector('.letter-btn:not([disabled])');
-        if (firstLetterBtn) {
-            firstLetterBtn.classList.add('active');
-        }
-    }
-    
-    // Отображение терминов по букве с пагинацией
-    function displayTermsByLetter(letter, page = 0, reset = false) {
+    // Отображение терминов с пагинацией
+    function displayTerms(page = 0, reset = false) {
         if (isAnimating) return;
         isAnimating = true;
         
-        let filteredTerms = termsByLetter[letter] || [];
-        
-        // Применяем текущий фильтр
-        if (currentFilter !== 'all') {
-            filteredTerms = filteredTerms.filter(term => term.category === currentFilter);
-        }
-        
-        // Применяем поиск, если есть
-        if (currentSearch) {
-            filteredTerms = filteredTerms.filter(term => 
-                term.term.toLowerCase().includes(currentSearch) ||
-                term.legalDefinition.toLowerCase().includes(currentSearch) ||
-                term.commonDefinition.toLowerCase().includes(currentSearch)
-            );
-        }
+        let filteredTerms = getFilteredTerms();
         
         // Обновляем счетчик
-        currentLetterElement.textContent = letter;
-        termsCount.textContent = `${filteredTerms.length} термин${getPluralEnding(filteredTerms.length)}`;
+        const showing = Math.min((page + 1) * termsPerPage, filteredTerms.length);
+        const total = filteredTerms.length;
+        termsCount.textContent = `Показано: ${showing} из ${total}`;
+        termsCount.style.animation = 'fadeIn 0.3s ease';
         
         // Показываем кнопку "Показать ещё" если есть еще термины
         if (loadMoreBtn) {
             const hasMore = ((page + 1) * termsPerPage) < filteredTerms.length;
             loadMoreBtn.style.display = hasMore ? 'flex' : 'none';
+            if (hasMore) {
+                loadMoreBtn.style.animation = 'fadeIn 0.5s ease';
+            }
         }
         
         // Если сброс, очищаем контейнер
-        if (reset || page === 0) {
+        if (reset) {
             termsContainer.innerHTML = '';
-            currentDisplayedTerms = [];
+            currentPage = 0;
+        } else if (page === 0) {
+            termsContainer.innerHTML = '';
         }
         
         // Получаем термины для текущей страницы
@@ -134,14 +76,11 @@ function initDictionary() {
         const end = start + termsPerPage;
         const pageTerms = filteredTerms.slice(start, end);
         
-        // Добавляем к отображаемым терминам
-        currentDisplayedTerms = [...currentDisplayedTerms, ...pageTerms];
-        
         // Создаем DocumentFragment для пакетного добавления
         const fragment = document.createDocumentFragment();
         
         pageTerms.forEach((term, index) => {
-            const termCard = createTermCard(term, index + (page * termsPerPage));
+            const termCard = createTermCard(term, index);
             fragment.appendChild(termCard);
         });
         
@@ -155,30 +94,22 @@ function initDictionary() {
         }, 300);
     }
     
-    // Создание карточки термина с оптимизацией
+    // Создание карточки термина
     function createTermCard(term, index) {
         const termCard = document.createElement('div');
         termCard.className = 'term-card';
-        termCard.style.animationDelay = `${Math.min(index, 20) * 20}ms`; // Ограничиваем анимацию
+        termCard.style.animationDelay = `${index * 100}ms`;
         
         const categoryName = getCategoryName(term.category);
         
         termCard.innerHTML = `
-            <h3>${highlightSearch(term.term)} <span class="tag" data-category="${term.category}">${categoryName}</span></h3>
-            <div class="legal-def"><strong>Юридическое определение:</strong> ${highlightSearch(term.legalDefinition)}</div>
-            <div class="common-def"><strong>Бытовое употребление:</strong> ${highlightSearch(term.commonDefinition)}</div>
-            <div class="example"><strong>Пример:</strong> ${highlightSearch(term.example)}</div>
+            <h3>${term.term} <span class="tag" data-category="${term.category}">${categoryName}</span></h3>
+            <div class="legal-def"><strong>Юридическое определение:</strong> ${term.legalDefinition}</div>
+            <div class="common-def"><strong>Бытовое употребление:</strong> ${term.commonDefinition}</div>
+            <div class="example"><strong>Пример:</strong> ${term.example}</div>
         `;
         
         return termCard;
-    }
-    
-    // Подсветка результатов поиска
-    function highlightSearch(text) {
-        if (!currentSearch) return text;
-        
-        const regex = new RegExp(`(${currentSearch})`, 'gi');
-        return text.replace(regex, '<mark>$1</mark>');
     }
     
     // Получение названия категории
@@ -194,23 +125,41 @@ function initDictionary() {
             'international': '🌍 Международное',
             'legislation': '📜 Законодательство',
             'rights': '🛡️ Права',
-            'documents': '📄 Документы'
+            'documents': '📄 Документы',
+            'politics': '🏛️ Политика',
+            'economics': '📊 Экономика',
+            'commerce': '🛒 Коммерция',
+            'negotiation': '🤝 Переговоры'
         };
         return categories[category] || '📌 Другое';
     }
     
+    // Фильтрация терминов
+    function getFilteredTerms() {
+        let filtered = allTerms;
+        
+        // Применяем фильтр
+        if (currentFilter !== 'all') {
+            filtered = filtered.filter(term => term.category === currentFilter);
+        }
+        
+        // Применяем поиск
+        if (currentSearch) {
+            const searchLower = currentSearch.toLowerCase();
+            filtered = filtered.filter(term => 
+                term.term.toLowerCase().includes(searchLower) ||
+                term.legalDefinition.toLowerCase().includes(searchLower) ||
+                term.commonDefinition.toLowerCase().includes(searchLower)
+            );
+        }
+        
+        return filtered;
+    }
+    
     // Поиск терминов с дебаунсингом
     const searchTerms = debounce(function(query) {
-        currentSearch = query.toLowerCase();
-        currentPage = 0;
-        
-        // Если есть поисковый запрос, отображаем результаты поиска
-        if (currentSearch) {
-            performSearch();
-        } else {
-            // Возвращаемся к текущей букве
-            displayTermsByLetter(currentLetter, 0, true);
-        }
+        currentSearch = query;
+        displayTerms(0, true);
         
         // Анимация поиска
         if (searchBtn) {
@@ -221,87 +170,8 @@ function initDictionary() {
         }
     }, 300);
     
-    // Выполнение поиска
-    function performSearch() {
-        const filteredTerms = allTerms.filter(term => 
-            term.term.toLowerCase().includes(currentSearch) ||
-            term.legalDefinition.toLowerCase().includes(currentSearch) ||
-            term.commonDefinition.toLowerCase().includes(currentSearch)
-        );
-        
-        // Обновляем счетчик
-        currentLetterElement.textContent = 'Результаты поиска';
-        termsCount.textContent = `${filteredTerms.length} результат${getPluralEnding(filteredTerms.length)}`;
-        
-        // Очищаем контейнер
-        termsContainer.innerHTML = '';
-        
-        if (filteredTerms.length === 0) {
-            termsContainer.innerHTML = `
-                <div class="no-results">
-                    <i class="fas fa-search"></i>
-                    <h3>Ничего не найдено</h3>
-                    <p>Попробуйте изменить поисковый запрос</p>
-                </div>
-            `;
-            loadMoreBtn.style.display = 'none';
-            return;
-        }
-        
-        // Отображаем первые результаты
-        displaySearchResults(filteredTerms.slice(0, termsPerPage));
-        
-        // Настраиваем кнопку "Показать ещё" для поиска
-        if (loadMoreBtn) {
-            const hasMore = filteredTerms.length > termsPerPage;
-            loadMoreBtn.style.display = hasMore ? 'flex' : 'none';
-            
-            // Обновляем обработчик для поиска
-            loadMoreBtn.onclick = () => {
-                const nextPage = Math.floor(currentDisplayedTerms.length / termsPerPage);
-                const start = nextPage * termsPerPage;
-                const end = start + termsPerPage;
-                const nextTerms = filteredTerms.slice(start, end);
-                
-                if (nextTerms.length > 0) {
-                    displaySearchResults(nextTerms, true);
-                }
-                
-                if (end >= filteredTerms.length) {
-                    loadMoreBtn.style.display = 'none';
-                }
-            };
-        }
-    }
-    
-    // Отображение результатов поиска
-    function displaySearchResults(terms, append = false) {
-        if (!append) {
-            termsContainer.innerHTML = '';
-            currentDisplayedTerms = [];
-        }
-        
-        const fragment = document.createDocumentFragment();
-        
-        terms.forEach((term, index) => {
-            const termCard = createTermCard(term, index);
-            fragment.appendChild(termCard);
-            currentDisplayedTerms.push(term);
-        });
-        
-        termsContainer.appendChild(fragment);
-    }
-    
-    // Функция для правильного склонения
-    function getPluralEnding(number) {
-        if (number % 10 === 1 && number % 100 !== 11) return '';
-        if (number % 10 >= 2 && number % 10 <= 4 && (number % 100 < 10 || number % 100 >= 20)) return 'а';
-        return 'ов';
-    }
-    
     // Инициализация событий
-    initAlphabetNavigation();
-    displayTermsByLetter('А', 0, true);
+    displayTerms(0);
     
     // Обработка поиска
     searchBtn.addEventListener('click', () => {
@@ -326,14 +196,7 @@ function initDictionary() {
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             currentFilter = button.dataset.filter;
-            
-            // Если есть активный поиск, применяем фильтр к результатам
-            if (currentSearch) {
-                performSearch();
-            } else {
-                // Иначе отображаем термины по текущей букве с фильтром
-                displayTermsByLetter(currentLetter, 0, true);
-            }
+            displayTerms(0, true);
         });
     });
     
@@ -348,18 +211,12 @@ function initDictionary() {
                 loadMoreBtn.style.transform = 'scale(1)';
             }, 150);
             
-            if (currentSearch) {
-                // Для поиска используем специальную логику
-                loadMoreBtn.onclick();
-            } else {
-                // Для обычного просмотра
-                displayTermsByLetter(currentLetter, currentPage + 1);
-            }
+            displayTerms(currentPage + 1);
         });
     }
 }
 
-// Модуль навигации (упрощенный)
+// Модуль навигации
 function initNavigation() {
     const navLinks = document.querySelectorAll('.nav-menu a');
     const menuToggle = document.querySelector('.menu-toggle');
@@ -389,6 +246,12 @@ function initNavigation() {
                 // Обновляем активную ссылку
                 navLinks.forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
+                
+                // Анимация активной ссылки
+                link.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    link.style.transform = 'scale(1)';
+                }, 150);
             }
         });
     });
@@ -402,6 +265,12 @@ function initNavigation() {
             } else {
                 menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
             }
+            
+            // Анимация
+            menuToggle.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                menuToggle.style.transform = 'scale(1)';
+            }, 150);
         });
     }
     
@@ -414,25 +283,51 @@ function initNavigation() {
             }
         }
     });
-}
-
-// Оптимизация: ленивая загрузка изображений
-if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const termCard = entry.target;
-                termCard.style.animation = 'slideUp 0.4s ease';
+    
+    // Обновление активной ссылки при прокрутке
+    const updateActiveLink = debounce(() => {
+        const scrollPosition = window.scrollY + 100;
+        let currentSection = '';
+        
+        document.querySelectorAll('section').forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                currentSection = '#' + section.id;
             }
         });
-    }, {
-        threshold: 0.1
-    });
-    
-    // Начинаем наблюдать после загрузки
-    setTimeout(() => {
-        document.querySelectorAll('.term-card').forEach(card => {
-            observer.observe(card);
+        
+        // Обновляем активную ссылку
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === currentSection) {
+                link.classList.add('active');
+            }
         });
-    }, 1000);
+    }, 100);
+    
+    window.addEventListener('scroll', updateActiveLink);
 }
+
+// Добавляем анимацию пульсации
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.7; }
+        100% { opacity: 1; }
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    
+    body {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+`;
+document.head.appendChild(style);
