@@ -3,464 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Юридический словарь</title>
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚖️</text></svg>">
-    <!-- Шрифты -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Иконки -->
+    <title>Юридический язык: просто и точно</title>
+    <!-- Favicon для разных случаев -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    
+    <!-- Для iOS устройств -->
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Стили -->
-    <style>
-        /* Сброс и базовые стили */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-color: #2563eb;
-            --primary-dark: #1d4ed8;
-            --primary-light: #3b82f6;
-            --secondary-color: #64748b;
-            --accent-color: #10b981;
-            --danger-color: #ef4444;
-            --warning-color: #f59e0b;
-            --dark-color: #1e293b;
-            --dark-gray: #475569;
-            --gray-color: #64748b;
-            --light-gray: #f1f5f9;
-            --light-color: #ffffff;
-            
-            --border-radius: 8px;
-            --border-radius-lg: 12px;
-            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
-            
-            --transition: all 0.2s ease;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.5;
-            color: var(--dark-color);
-            background: var(--light-gray);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
-
-        /* Навигация */
-        .navbar {
-            background: var(--light-color);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: var(--shadow);
-            border-bottom: 1px solid var(--light-gray);
-        }
-
-        .navbar .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-
-        .logo i {
-            font-size: 1.75rem;
-            color: var(--primary-color);
-        }
-
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--dark-color);
-        }
-
-        /* Основной контент */
-        main {
-            padding: 2rem 0;
-        }
-
-        /* Заголовок */
-        .page-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .page-header h1 {
-            font-size: 2.5rem;
-            color: var(--dark-color);
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
-
-        .page-header p {
-            color: var(--gray-color);
-            font-size: 1.125rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Поиск */
-        .search-container {
-            max-width: 600px;
-            margin: 0 auto 2rem;
-        }
-
-        .search-box {
-            display: flex;
-            background: var(--light-color);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            border: 1px solid var(--light-gray);
-        }
-
-        .search-box input {
-            flex: 1;
-            padding: 1rem;
-            border: none;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .search-box button {
-            padding: 0 1.5rem;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .search-box button:hover {
-            background: var(--primary-dark);
-        }
-
-        /* Алфавит */
-        .alphabet-nav {
-            background: var(--light-color);
-            border-radius: var(--border-radius);
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 70px;
-            z-index: 999;
-            border: 1px solid var(--light-gray);
-        }
-
-        .alphabet-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            justify-content: center;
-        }
-
-        .letter-btn {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--light-gray);
-            border: 1px solid transparent;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-            color: var(--dark-color);
-        }
-
-        .letter-btn:hover {
-            background: var(--primary-light);
-            color: white;
-            transform: translateY(-1px);
-        }
-
-        .letter-btn.active {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
-        /* Словарь */
-        .dictionary-section {
-            background: var(--light-color);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--light-gray);
-            overflow: hidden;
-        }
-
-        .dictionary-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--light-gray);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .current-letter {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .terms-count {
-            color: var(--gray-color);
-            font-size: 0.875rem;
-        }
-
-        .terms-container {
-            padding: 0 1.5rem 1.5rem;
-            max-height: 600px;
-            overflow-y: auto;
-        }
-
-        .terms-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .terms-container::-webkit-scrollbar-track {
-            background: var(--light-gray);
-            border-radius: 3px;
-        }
-
-        .terms-container::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 3px;
-        }
-
-        .term-card {
-            padding: 1.25rem;
-            margin-bottom: 0.75rem;
-            background: var(--light-gray);
-            border-radius: var(--border-radius);
-            border-left: 3px solid var(--primary-color);
-            transition: var(--transition);
-        }
-
-        .term-card:hover {
-            transform: translateX(4px);
-            background: var(--light-color);
-        }
-
-        .term-card h3 {
-            color: var(--dark-color);
-            margin-bottom: 0.5rem;
-            font-size: 1.125rem;
-            font-weight: 600;
-        }
-
-        .term-card .definition {
-            color: var(--dark-gray);
-            font-size: 0.875rem;
-            line-height: 1.6;
-            margin-bottom: 0.75rem;
-        }
-
-        .term-card .example {
-            color: var(--gray-color);
-            font-size: 0.75rem;
-            font-style: italic;
-            padding-left: 0.5rem;
-            border-left: 2px solid var(--accent-color);
-        }
-
-        /* Инфо блок */
-        .info-box {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            margin-top: 2rem;
-            text-align: center;
-        }
-
-        .info-box h3 {
-            margin-bottom: 0.5rem;
-            font-size: 1.25rem;
-        }
-
-        .info-box p {
-            opacity: 0.9;
-            margin-bottom: 1rem;
-        }
-
-        /* Футер */
-        footer {
-            background: var(--dark-color);
-            color: white;
-            padding: 2rem 0;
-            margin-top: 3rem;
-        }
-
-        .footer-content {
-            text-align: center;
-        }
-
-        .footer-content p {
-            margin-bottom: 0.5rem;
-            color: #cbd5e1;
-        }
-
-        /* Утилиты */
-        .visually-hidden {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        /* Адаптивность */
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 12px;
-            }
-            
-            .page-header h1 {
-                font-size: 2rem;
-            }
-            
-            .alphabet-buttons {
-                gap: 0.25rem;
-            }
-            
-            .letter-btn {
-                width: 36px;
-                height: 36px;
-                font-size: 0.875rem;
-            }
-            
-            .terms-container {
-                max-height: 500px;
-                padding: 0 1rem 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .logo h1 {
-                font-size: 1.25rem;
-            }
-            
-            .page-header h1 {
-                font-size: 1.75rem;
-            }
-            
-            .search-box {
-                flex-direction: column;
-            }
-            
-            .search-box input {
-                padding: 0.75rem;
-            }
-            
-            .search-box button {
-                padding: 0.75rem;
-            }
-        }
-
-        /* Анимации */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.3s ease;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="style.css">
 </head>
 <body>
     <!-- Навигация -->
     <nav class="navbar">
         <div class="container">
-            <a href="#" class="logo">
+            <div class="logo">
                 <i class="fas fa-balance-scale"></i>
-                <h1>Юридический словарь</h1>
-            </a>
+                <div class="logo-text">
+                    <h1>Юридический словарь</h1>
+                    <span>более 1000 терминов</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#dictionary" class="active"><i class="fas fa-book"></i> Словарь</a></li>
+            </ul>
+            <button class="menu-toggle" aria-label="Меню">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </nav>
 
     <!-- Основной контент -->
     <main class="container">
-        <!-- Заголовок -->
-        <div class="page-header">
-            <h1>Юридический словарь</h1>
-            <p>Более 1000 юридических терминов с пояснениями и примерами</p>
-        </div>
-
-        <!-- Поиск -->
-        <div class="search-container">
+        <!-- Раздел: Словарь терминов -->
+        <section id="dictionary" class="section">
+            <div class="section-header">
+                <div class="icon-wrapper">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h2>Юридический словарь</h2>
+                <p class="section-description">Более 1000 юридических терминов с подробными пояснениями</p>
+            </div>
+            
             <div class="search-box">
                 <input type="text" id="termSearch" placeholder="Введите термин для поиска..." aria-label="Поиск терминов">
-                <button id="searchBtn" aria-label="Найти">
-                    <i class="fas fa-search"></i>
-                </button>
+                <button id="searchBtn" aria-label="Найти"><i class="fas fa-search"></i> Найти</button>
             </div>
-        </div>
-
-        <!-- Алфавитная навигация -->
-        <div class="alphabet-nav">
-            <div class="alphabet-buttons" id="alphabetButtons">
-                <!-- Буквы будут добавлены скриптом -->
+            
+            <!-- Алфавитная навигация -->
+            <div class="alphabet-nav">
+                <div class="alphabet-buttons" id="alphabetButtons">
+                    <!-- Буквы будут добавлены динамически -->
+                </div>
             </div>
-        </div>
-
-        <!-- Словарь -->
-        <section class="dictionary-section">
-            <div class="dictionary-header">
-                <div class="current-letter" id="currentLetter">А</div>
-                <div class="terms-count" id="termsCount">Загрузка...</div>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Все термины</button>
+                <button class="filter-btn" data-filter="contract">Договоры</button>
+                <button class="filter-btn" data-filter="court">Суд</button>
+                <button class="filter-btn" data-filter="property">Собственность</button>
+                <button class="filter-btn" data-filter="finance">Финансы</button>
+                <button class="filter-btn" data-filter="criminal">Уголовное</button>
+                <button class="filter-btn" data-filter="civil">Гражданское</button>
+                <button class="filter-btn" data-filter="international">Международное</button>
+                <button class="filter-btn" data-filter="legislation">Законодательство</button>
+                <button class="filter-btn" data-filter="rights">Права</button>
+                <button class="filter-btn" data-filter="documents">Документы</button>
             </div>
-            <div class="terms-container" id="termsContainer">
+            
+            <!-- Текущая буква и количество -->
+            <div class="current-letter-info">
+                <span class="current-letter" id="currentLetter">А</span>
+                <span class="terms-count" id="termsCount">Загрузка...</span>
+            </div>
+            
+            <div id="termsContainer" class="terms-container">
                 <!-- Термины загружаются динамически -->
             </div>
+            
+            <div class="load-more-container" id="loadMoreContainer">
+                <button id="loadMoreBtn" class="btn-tertiary">
+                    <i class="fas fa-plus"></i> Показать ещё термины
+                </button>
+                <div class="total-count" id="totalCount">Всего терминов: 1000+</div>
+            </div>
+            
+            <div class="example-box">
+                <h3><i class="fas fa-lightbulb"></i> Пример юридического термина</h3>
+                <div class="example-content">
+                    <div class="incorrect">
+                        <h4><i class="fas fa-book"></i> Термин:</h4>
+                        <p><strong>Абандон</strong> - отказ страхователя от своих прав на застрахованное имущество</p>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="correct">
+                        <h4><i class="fas fa-graduation-cap"></i> Пример использования:</h4>
+                        <p>"Абандон судна при его полной гибели позволяет получить полную страховую сумму"</p>
+                    </div>
+                </div>
+            </div>
         </section>
-
-        <!-- Инфо блок -->
-        <div class="info-box">
-            <h3>📚 Более 1000 терминов</h3>
-            <p>Полный юридический словарь с терминами от А до Я</p>
-        </div>
     </main>
 
     <!-- Футер -->
     <footer>
         <div class="container">
             <div class="footer-content">
-                <p>&copy; 2024 Юридический словарь. Для образовательных целей.</p>
-                <p>Всего терминов: <span id="totalTerms">1000+</span></p>
+                <div class="footer-logo">
+                    <i class="fas fa-balance-scale"></i>
+                    <div>
+                        <h3>Юридический словарь</h3>
+                        <p>более 1000 терминов</p>
+                    </div>
+                </div>
+                <div class="footer-info">
+                    <p>Проект создан для ознакомительных целей. Словарь содержит более 1000 юридических терминов.</p>
+                    <p>&copy; <span id="currentYear"></span> Юридический словарь.</p>
+                </div>
             </div>
         </div>
     </footer>
 
-    <!-- JavaScript -->
+    <!-- Подключение JavaScript -->
     <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
