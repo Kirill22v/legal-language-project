@@ -35,6 +35,32 @@
     --transition: all 0.2s ease;
 }
 
+/* Тёмная тема */
+[data-theme="dark"] {
+    --primary-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+    --secondary-gradient: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+    --accent-gradient: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+    --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    
+    --primary-color: #8b5cf6;
+    --secondary-color: #6366f1;
+    --accent-color: #0ea5e9;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    
+    --dark-color: #f8fafc;
+    --dark-gray: #cbd5e1;
+    --gray-color: #94a3b8;
+    --light-gray: #334155;
+    --light-color: #0f172a;
+    
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.5);
+}
+
 body {
     font-family: 'Inter', sans-serif;
     line-height: 1.5;
@@ -42,6 +68,7 @@ body {
     background: var(--light-color);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -60,6 +87,11 @@ body {
     z-index: 1000;
     box-shadow: var(--shadow);
     backdrop-filter: blur(10px);
+    transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] .navbar {
+    background: rgba(15, 23, 42, 0.98);
 }
 
 .navbar .container {
@@ -68,37 +100,164 @@ body {
     align-items: center;
 }
 
+/* Обновляем стили логотипа */
 .logo {
     display: flex;
     align-items: center;
     gap: 12px;
     transition: transform 0.3s ease;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: var(--border-radius);
+    border-left: 3px solid var(--primary-color);
+    position: relative;
+    overflow: hidden;
 }
 
-.logo:hover {
-    transform: translateY(-1px);
+[data-theme="dark"] .logo {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+    border-left: 3px solid var(--primary-color);
+}
+
+.logo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.logo:hover::before {
+    left: 100%;
 }
 
 .logo i {
-    font-size: 2rem;
+    font-size: 2.5rem;
     background: var(--primary-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3));
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
 }
 
 .logo-text h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: 700;
     background: var(--primary-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    line-height: 1.1;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
 }
 
 .logo-text span {
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     color: var(--gray-color);
     font-style: italic;
+    font-weight: 500;
+    background: linear-gradient(135deg, var(--gray-color) 0%, var(--dark-gray) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Бейдж для логотипа */
+.logo-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+    background: var(--warning-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+    z-index: 1;
+}
+
+.logo-badge i {
+    font-size: 10px;
+    color: white;
+    -webkit-text-fill-color: white;
+    background: none;
+    filter: none;
+}
+
+/* Переключатель темы */
+.theme-toggle-container {
+    margin-left: auto;
+    margin-right: 1rem;
+}
+
+.theme-toggle {
+    background: var(--primary-gradient);
+    border: none;
+    width: 50px;
+    height: 30px;
+    border-radius: 50px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.05);
+}
+
+.theme-toggle i {
+    font-size: 14px;
+    color: white;
+    transition: all 0.3s ease;
+    position: absolute;
+}
+
+.theme-toggle .fa-moon {
+    left: 7px;
+    opacity: 1;
+}
+
+.theme-toggle .fa-sun {
+    right: 7px;
+    opacity: 0;
+}
+
+[data-theme="dark"] .theme-toggle .fa-moon {
+    opacity: 0;
+}
+
+[data-theme="dark"] .theme-toggle .fa-sun {
+    opacity: 1;
+}
+
+.theme-toggle::before {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 50%;
+    left: 3px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .theme-toggle::before {
+    transform: translateX(20px);
 }
 
 .nav-menu {
@@ -165,6 +324,10 @@ body {
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow);
     transition: var(--transition);
+}
+
+[data-theme="dark"] .section {
+    background: #1e293b;
 }
 
 .section:hover {
@@ -242,6 +405,8 @@ body {
     border-radius: var(--border-radius) 0 0 var(--border-radius);
     font-size: 1rem;
     transition: var(--transition);
+    background: var(--light-color);
+    color: var(--dark-color);
 }
 
 .search-box input:focus {
@@ -302,6 +467,13 @@ body {
     flex-shrink: 0;
 }
 
+[data-theme="dark"] .filter-btn,
+[data-theme="dark"] .template-btn {
+    background: #1e293b;
+    border-color: #334155;
+    color: var(--dark-gray);
+}
+
 .filter-btn:hover,
 .filter-btn.active,
 .template-btn:hover,
@@ -327,6 +499,11 @@ body {
     transition: var(--transition);
     animation: slideUp 0.4s ease;
     animation-fill-mode: both;
+}
+
+[data-theme="dark"] .term-card {
+    background: #1e293b;
+    border-color: #334155;
 }
 
 @keyframes slideUp {
@@ -493,6 +670,10 @@ body {
     border: 1px solid var(--light-gray);
 }
 
+[data-theme="dark"] .template-selector {
+    background: #1e293b;
+}
+
 .template-buttons {
     display: flex;
     gap: 0.5rem;
@@ -518,6 +699,11 @@ body {
     background: white;
     border-radius: var(--border-radius);
     border: 1px solid var(--light-gray);
+}
+
+[data-theme="dark"] .input-section,
+[data-theme="dark"] .preview-section {
+    background: #1e293b;
 }
 
 .input-section h3, .preview-section h3 {
@@ -551,6 +737,8 @@ body {
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
     transition: var(--transition);
+    background: var(--light-color);
+    color: var(--dark-color);
 }
 
 .form-group input:focus,
@@ -614,6 +802,12 @@ body {
     border: 2px solid var(--light-gray);
 }
 
+[data-theme="dark"] .btn-tertiary {
+    background: #1e293b;
+    color: var(--dark-gray);
+    border-color: #334155;
+}
+
 .btn-tertiary:hover {
     background: var(--light-gray);
     transform: translateY(-2px);
@@ -648,6 +842,12 @@ body {
     overflow-y: auto;
     font-size: 0.875rem;
     transition: max-height 0.3s ease;
+}
+
+[data-theme="dark"] .document-preview {
+    background: #1e293b;
+    border-color: #334155;
+    color: var(--dark-gray);
 }
 
 @media (max-width: 768px) {
@@ -929,6 +1129,10 @@ footer {
     margin-top: 2rem;
 }
 
+[data-theme="dark"] footer {
+    background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+}
+
 .footer-content {
     display: flex;
     justify-content: space-between;
@@ -1003,6 +1207,10 @@ footer {
         animation: slideDown 0.3s ease;
     }
     
+    [data-theme="dark"] .nav-menu {
+        background: rgba(15, 23, 42, 0.98);
+    }
+    
     @keyframes slideDown {
         from {
             opacity: 0;
@@ -1020,6 +1228,32 @@ footer {
     
     .menu-toggle {
         display: block;
+    }
+    
+    .theme-toggle-container {
+        margin-right: 0.5rem;
+        order: 2;
+    }
+    
+    .nav-menu {
+        order: 3;
+    }
+    
+    .menu-toggle {
+        order: 1;
+        margin-left: auto;
+    }
+    
+    .navbar .container {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .logo {
+        order: 0;
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 10px;
     }
     
     .section h2 {
