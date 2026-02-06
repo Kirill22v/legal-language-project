@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Юридический язык: просто и точно</title>
-        <!-- Favicon для разных случаев -->
+    <!-- Favicon для разных случаев -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -17,8 +17,21 @@
     <link rel="preload" as="style" href="style.css">
 </head>
 <body>
-    <!-- Навигация -->
+    <!-- Переключатель темы в правом нижнем углу -->
+    <button id="themeToggle" class="theme-toggle" aria-label="Переключить тему">
+        <i class="fas fa-moon moon-icon"></i>
+        <i class="fas fa-sun sun-icon"></i>
+        <span class="theme-toggle-slider"></span>
+    </button>
+
+    <!-- Кнопка "Наверх" -->
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Наверх">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Навигация с параллакс-эффектом -->
     <nav class="navbar">
+        <div class="parallax-bg"></div>
         <div class="container">
             <div class="logo">
                 <i class="fas fa-balance-scale"></i>
@@ -48,9 +61,66 @@
                 <p class="section-description">Пояснение юридических терминов в сравнении с бытовым употреблением</p>
             </div>
             
-            <div class="search-box">
-                <input type="text" id="termSearch" placeholder="Введите термин для поиска..." aria-label="Поиск терминов">
-                <button id="searchBtn" aria-label="Найти"><i class="fas fa-search"></i> Найти</button>
+            <!-- Улучшенный поиск -->
+            <div class="search-container">
+                <div class="search-box">
+                    <div class="search-input-wrapper">
+                        <input type="text" id="termSearch" placeholder="Введите термин для поиска..." aria-label="Поиск терминов">
+                        <div id="autocompleteResults" class="autocomplete-results"></div>
+                    </div>
+                    <button id="searchBtn" aria-label="Найти"><i class="fas fa-search"></i> Найти</button>
+                    <button id="clearSearchBtn" class="clear-search-btn" aria-label="Очистить поиск" title="Очистить поиск">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <!-- Расширенный поиск -->
+                <div class="advanced-search">
+                    <button id="toggleAdvancedSearch" class="btn-tertiary advanced-search-toggle">
+                        <i class="fas fa-sliders-h"></i> Расширенный поиск
+                    </button>
+                    
+                    <div id="advancedSearchOptions" class="advanced-search-options" style="display: none;">
+                        <div class="search-options-grid">
+                            <div class="search-option">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="searchInName" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <span>В названии термина</span>
+                                </label>
+                            </div>
+                            <div class="search-option">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="searchInDefinition">
+                                    <span class="checkbox-custom"></span>
+                                    <span>В юридическом определении</span>
+                                </label>
+                            </div>
+                            <div class="search-option">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="searchInCommon">
+                                    <span class="checkbox-custom"></span>
+                                    <span>В бытовом употреблении</span>
+                                </label>
+                            </div>
+                            <div class="search-option">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="searchInExample">
+                                    <span class="checkbox-custom"></span>
+                                    <span>В примерах</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Фильтры с кнопкой сброса -->
+            <div class="filters-header">
+                <h3>Фильтры по категориям</h3>
+                <button id="resetFiltersBtn" class="reset-filters-btn">
+                    <i class="fas fa-redo"></i> Сбросить все
+                </button>
             </div>
             
             <div class="filter-buttons">
@@ -71,18 +141,40 @@
                 <button class="filter-btn" data-filter="negotiation">Переговоры</button>
             </div>
             
+            <!-- Счетчик результатов -->
+            <div class="results-counter">
+                <span id="resultsCount">Найдено терминов: 0</span>
+                <div class="search-indicators">
+                    <span id="activeFilter" class="filter-indicator"></span>
+                    <span id="searchQueryIndicator" class="search-indicator"></span>
+                </div>
+            </div>
+            
+            <!-- Контейнер терминов -->
             <div id="termsContainer" class="terms-container">
                 <!-- Термины загружаются динамически -->
             </div>
             
+            <!-- Пагинация -->
             <div class="load-more-container" id="loadMoreContainer">
                 <button id="loadMoreBtn" class="btn-tertiary">
                     <i class="fas fa-plus"></i> Показать ещё термины
                 </button>
-                <div class="terms-count" id="termsCount"></div>
+                <div class="pagination-info">
+                    <div class="terms-count" id="termsCount"></div>
+                    <div class="pagination-controls">
+                        <button id="prevPageBtn" class="pagination-btn" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span id="currentPage">1</span>
+                        <button id="nextPageBtn" class="pagination-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </section>
-    </main> <!-- Закрывающий тег main был добавлен -->
+    </main>
 
     <!-- Футер -->
     <footer>
@@ -102,13 +194,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- Переключатель темы в правом нижнем углу -->
-    <button id="themeToggle" class="theme-toggle" aria-label="Переключить тему">
-        <i class="fas fa-moon moon-icon"></i>
-        <i class="fas fa-sun sun-icon"></i>
-        <span class="theme-toggle-slider"></span>
-    </button>
 
     <!-- Подключение JavaScript -->
     <script src="data.js"></script>
