@@ -242,6 +242,71 @@ function initNavigation() {
                 // Обновляем активную ссылку
                 navLinks.forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
+                // Анимация карточек при появлении
+function initCardAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationDelay = `${entry.target.dataset.delay || 0}ms`;
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.term-card').forEach((card, index) => {
+        card.dataset.delay = index * 100;
+        observer.observe(card);
+    });
+}
+
+// Инициализация всех анимаций
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Страница загружена');
+    
+    // Устанавливаем текущий год
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    
+    // Инициализация переключателя темы
+    initThemeToggle();
+    
+    // Инициализация словаря
+    initDictionary();
+    
+    // Инициализация навигации
+    initNavigation();
+    
+    // Инициализация анимаций
+    setTimeout(initCardAnimations, 500);
+    
+    // Убираем прозрачность body
+    document.body.style.opacity = '1';
+});
+
+// В существующую функцию createTermCard добавьте:
+function createTermCard(term, index) {
+    const termCard = document.createElement('div');
+    termCard.className = 'term-card';
+    termCard.style.opacity = '0';
+    termCard.style.transform = 'translateY(20px)';
+    termCard.style.animationDelay = `${index * 100}ms`;
+    
+    const categoryName = getCategoryName(term.category);
+    
+    termCard.innerHTML = `
+        <h3>${term.term} <span class="tag">${categoryName}</span></h3>
+        <div class="legal-def"><strong>Юридическое определение:</strong> ${term.legalDefinition}</div>
+        <div class="common-def"><strong>Бытовое употребление:</strong> ${term.commonDefinition}</div>
+        <div class="example"><strong>Пример:</strong> ${term.example}</div>
+    `;
+    
+    return termCard;
+}
             }
         });
     });
