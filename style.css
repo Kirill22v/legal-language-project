@@ -772,3 +772,67 @@ html {
 body > * {
     animation: fadeIn 0.8s ease-out forwards;
 }
+/* Стили для форматированных списков в карточках терминов */
+.term-card .list-item {
+    margin: 0.25rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    line-height: 1.5;
+}
+
+.term-card .list-item::before {
+    content: '•';
+    position: absolute;
+    left: 0.5rem;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.term-card .legal-def .list-item::before {
+    color: var(--primary-color);
+}
+
+.term-card .common-def .list-item::before {
+    color: var(--secondary-color);
+}
+
+.term-card .example .list-item::before {
+    color: #8b5cf6;
+}
+
+/* Улучшенные стили для многострочного контента */
+.term-card .legal-def,
+.term-card .common-def,
+.term-card .example {
+    margin: 1rem 0;
+    padding-left: 1rem;
+    border-left: 3px solid;
+    transition: var(--transition);
+}
+
+.term-card .legal-def > div,
+.term-card .common-def > div,
+.term-card .example > div {
+    margin: 0.5rem 0;
+    line-height: 1.6;
+}
+
+.term-card .legal-def strong,
+.term-card .common-def strong,
+.term-card .example strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+    font-size: 0.95rem;
+}
+
+/* Для корректного переноса длинных слов */
+.term-card h3 {
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.term-card > div {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
