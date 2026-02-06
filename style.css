@@ -1301,6 +1301,109 @@ footer {
     white-space: nowrap;
     border: 0;
 }
+/* Переключатель темы в правом нижнем углу */
+.theme-toggle {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+.theme-toggle .moon-icon,
+.theme-toggle .sun-icon {
+    position: absolute;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle .moon-icon {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.theme-toggle .sun-icon {
+    opacity: 0;
+    transform: translateY(20px) scale(0.5);
+}
+
+[data-theme="dark"] .theme-toggle .moon-icon {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.5);
+}
+
+[data-theme="dark"] .theme-toggle .sun-icon {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.theme-toggle-slider {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    bottom: 5px;
+    left: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover .theme-toggle-slider {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Анимация переключения */
+@keyframes themeSwitch {
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.2) rotate(180deg); }
+    100% { transform: scale(1) rotate(360deg); }
+}
+
+.theme-toggle.animating {
+    animation: themeSwitch 0.6s ease;
+}
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+    .theme-toggle {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .theme-toggle {
+        bottom: 15px;
+        right: 15px;
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+    }
+}
 
 /* Отключение анимаций для пользователей, которые их предпочитают не видеть */
 @media (prefers-reduced-motion: reduce) {
