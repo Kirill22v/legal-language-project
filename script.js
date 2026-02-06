@@ -109,23 +109,60 @@ function initDictionary() {
         }
     }
     
-    // Создание карточки термина
-    function createTermCard(term, index) {
-        const termCard = document.createElement('div');
-        termCard.className = 'term-card';
-        termCard.style.animationDelay = `${index * 100}ms`;
+
+// Создание карточки термина
+function createTermCard(term, index) {
+    const termCard = document.createElement('div');
+    termCard.className = 'term-card';
+    termCard.style.animationDelay = `${index * 100}ms`;
+    
+    const categoryName = getCategoryName(term.category);
+    
+    // Функция для форматирования текста с сохранением структуры
+    function formatText(text) {
+        if (!text) return '';
         
-        const categoryName = getCategoryName(term.category);
-        
-        termCard.innerHTML = `
-            <h3>${term.term} <span class="tag">${categoryName}</span></h3>
-            <div class="legal-def"><strong>Юридическое определение:</strong> ${term.legalDefinition}</div>
-            <div class="common-def"><strong>Бытовое употребление:</strong> ${term.commonDefinition}</div>
-            <div class="example"><strong>Пример:</strong> ${term.example}</div>
-        `;
-        
-        return termCard;
+        // Заменяем переносы строк на HTML-теги
+        return text
+            .split('\n') // Разделяем по переносам строк
+            .map(line => {
+                line = line.trim();
+                if (!line) return '';
+                
+                // Обрабатываем маркированные списки
+                if (line.startsWith('- ') || line.startsWith('• ') || line.startsWith('* ')) {
+                    return `<div class="list-item">${line.substring(2)}</div>`;
+                }
+                
+                // Обрабатываем нумерованные списки (1., 2., etc.)
+                if (/^\d+\.\s/.test(line)) {
+                    return `<div class="list-item">${line}</div>`;
+                }
+                
+                return `<div>${line}</div>`;
+            })
+            .filter(line => line !== '') // Убираем пустые строки
+            .join('');
     }
+    
+    termCard.innerHTML = `
+        <h3>${term.term} <span class="tag">${categoryName}</span></h3>
+        <div class="legal-def">
+            <strong>Юридическое определение:</strong> 
+            ${formatText(term.legalDefinition)}
+        </div>
+        <div class="common-def">
+            <strong>Бытовое употребление:</strong> 
+            ${formatText(term.commonDefinition)}
+        </div>
+        <div class="example">
+            <strong>Пример:</strong> 
+            ${formatText(term.example)}
+        </div>
+    `;
+    
+    return termCard;
+}
     
     // Получение названия категории
     function getCategoryName(category) {
