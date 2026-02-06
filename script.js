@@ -38,7 +38,7 @@ function initDictionary() {
     let currentFilter = 'all';
     let currentSearch = '';
     let currentPage = 0;
-    const termsPerPage = 9; // 3 колонки по 3 термина
+    const termsPerPage = 9;
     let isAnimating = false;
     
     // Отображение терминов с пагинацией
@@ -134,22 +134,20 @@ function initDictionary() {
         return categories[category] || '📌 Другое';
     }
     
-    // Фильтрация терминов
+    // Фильтрация терминов (ТОЛЬКО ПО НАЗВАНИЮ ТЕРМИНА)
     function getFilteredTerms() {
         let filtered = allTerms;
         
-        // Применяем фильтр
+        // Применяем фильтр по категории
         if (currentFilter !== 'all') {
             filtered = filtered.filter(term => term.category === currentFilter);
         }
         
-        // Применяем поиск
+        // Применяем поиск ТОЛЬКО ПО НАЗВАНИЮ ТЕРМИНА
         if (currentSearch) {
-            const searchLower = currentSearch.toLowerCase();
+            const searchLower = currentSearch.toLowerCase().trim();
             filtered = filtered.filter(term => 
-                term.term.toLowerCase().includes(searchLower) ||
-                term.legalDefinition.toLowerCase().includes(searchLower) ||
-                term.commonDefinition.toLowerCase().includes(searchLower)
+                term.term.toLowerCase().includes(searchLower)
             );
         }
         
@@ -168,7 +166,39 @@ function initDictionary() {
                 searchBtn.style.transform = 'scale(1)';
             }, 150);
         }
+        
+        // Показываем сообщение, если ничего не найдено
+        const filteredTerms = getFilteredTerms();
+        if (currentSearch && filteredTerms.length === 0) {
+            showNoResultsMessage();
+        } else {
+            hideNoResultsMessage();
+        }
     }, 300);
+    
+    // Функции для сообщений
+    function showNoResultsMessage() {
+        let message = document.getElementById('noResultsMessage');
+        if (!message) {
+            message = document.createElement('div');
+            message.id = 'noResultsMessage';
+            message.className = 'empty-state';
+            message.innerHTML = `
+                <i class="fas fa-search"></i>
+                <h3>Ничего не найдено</h3>
+                <p>Термин "${currentSearch}" не найден. Попробуйте другой запрос.</p>
+            `;
+            termsContainer.parentNode.insertBefore(message, termsContainer.nextSibling);
+        }
+        message.style.display = 'flex';
+    }
+    
+    function hideNoResultsMessage() {
+        const message = document.getElementById('noResultsMessage');
+        if (message) {
+            message.style.display = 'none';
+        }
+    }
     
     // Инициализация событий
     displayTerms(0);
@@ -180,6 +210,15 @@ function initDictionary() {
     
     searchInput.addEventListener('input', (e) => {
         searchTerms(e.target.value);
+    });
+    
+    // Очистка поиска при клике на крестик (если добавить в HTML)
+    searchInput.addEventListener('search', () => {
+        if (searchInput.value === '') {
+            currentSearch = '';
+            displayTerms(0, true);
+            hideNoResultsMessage();
+        }
     });
     
     // Обработка фильтров
@@ -197,6 +236,7 @@ function initDictionary() {
             button.classList.add('active');
             currentFilter = button.dataset.filter;
             displayTerms(0, true);
+            hideNoResultsMessage();
         });
     });
     
