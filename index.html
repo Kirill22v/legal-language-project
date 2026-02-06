@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Юридический язык: просто и точно</title>
-    <!-- Favicon для разных случаев -->
+        <!-- Favicon для разных случаев -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -26,20 +26,7 @@
                     <h1>Юридический язык</h1>
                     <span>просто и точно</span>
                 </div>
-                <!-- Декоративный элемент для логотипа -->
-                <div class="logo-badge">
-                    <i class="fas fa-gavel"></i>
-                </div>
             </div>
-            
-            <!-- Переключатель темы -->
-            <div class="theme-toggle-container">
-                <button id="themeToggle" class="theme-toggle" aria-label="Переключить тему">
-                    <i class="fas fa-moon"></i>
-                    <i class="fas fa-sun"></i>
-                </button>
-            </div>
-            
             <ul class="nav-menu">
                 <li><a href="#dictionary" class="active"><i class="fas fa-book"></i> Словарь</a></li>
             </ul>
@@ -95,7 +82,7 @@
                 <div class="terms-count" id="termsCount"></div>
             </div>
         </section>
-    </main>
+    </main> <!-- Закрывающий тег main был добавлен -->
 
     <!-- Футер -->
     <footer>
@@ -115,6 +102,13 @@
             </div>
         </div>
     </footer>
+
+    <!-- Переключатель темы в правом нижнем углу -->
+    <button id="themeToggle" class="theme-toggle" aria-label="Переключить тему">
+        <i class="fas fa-moon moon-icon"></i>
+        <i class="fas fa-sun sun-icon"></i>
+        <span class="theme-toggle-slider"></span>
+    </button>
 
     <!-- Подключение JavaScript -->
     <script src="data.js"></script>
