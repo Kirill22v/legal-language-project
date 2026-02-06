@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Инициализация словаря
     initDictionary();
     initNavigation();
+    initThemeToggle(); // Инициализация переключателя темы
     
     // Добавляем анимацию загрузки
     setTimeout(() => {
@@ -254,6 +255,41 @@ function initDictionary() {
             displayTerms(currentPage + 1);
         });
     }
+}
+
+// Функция для инициализации переключателя темы
+function initThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    const htmlElement = document.documentElement;
+    
+    // Проверяем сохранённую тему или системные настройки
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        htmlElement.setAttribute('data-theme', 'dark');
+    }
+    
+    // Обработчик клика по переключателю
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = htmlElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        htmlElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Анимация переключения
+        themeToggle.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            themeToggle.style.transform = 'scale(1)';
+        }, 150);
+        
+        // Анимация плавного перехода
+        document.body.style.opacity = '0.7';
+        setTimeout(() => {
+            document.body.style.opacity = '1';
+        }, 300);
+    });
 }
 
 // Модуль навигации
